@@ -1,0 +1,14 @@
+[project]
+name = "tenx-ai-tts-adapter"
+version = "0.1.0"
+description = "OpenAI-compatible speech adapter for CosyVoice."
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi==0.115.6",
+    "httpx==0.28.1",
+    "pydantic==2.10.4",
+    "uvicorn[standard]==0.34.0",
+]
+
+[tool.setuptools]
+packages = ["app"]
