@@ -8,6 +8,12 @@ It exposes:
 POST /v1/audio/speech
 ```
 
+Default local port:
+
+```text
+http://127.0.0.1:4030
+```
+
 Runtime boundary:
 
 ```text
@@ -21,6 +27,8 @@ video-agent
 `tenx-ai-tts-adapter` is the CosyVoice adapter. It converts an OpenAI-compatible speech request into a local CosyVoice command and returns audio bytes.
 
 It does not route chat/image/video models, does not compose final videos, and does not store long-term business assets. Its generated files are temporary adapter outputs under `TTS_ADAPTER_STORAGE_ROOT`.
+
+It is intentionally not behind `tenx-ai-gateway`. `video-agent` calls this adapter directly so the Gateway remains independent.
 
 ## Calling Chains
 
@@ -36,6 +44,15 @@ Outbound dependencies:
 | --- | --- | --- |
 | CosyVoice | Real speech synthesis | `COSYVOICE_COMMAND` |
 | Local disk | Temporary audio output before response streaming | `TTS_ADAPTER_STORAGE_ROOT` |
+
+Storage behavior:
+
+```text
+TTS_ADAPTER_STORAGE_ROOT/
+  <uuid>.wav
+```
+
+The adapter writes a temporary audio file, returns its bytes to `video-agent`, and `video-agent` stores the project copy under `storage/projects/<project_id>/audio/voice.wav`.
 
 End-to-end speech chain:
 
