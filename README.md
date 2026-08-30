@@ -12,9 +12,8 @@ Runtime boundary:
 
 ```text
 video-agent
-  -> tenx-ai-gateway /v1/audio/speech
-      -> tenx-ai-tts-adapter /v1/audio/speech
-          -> CosyVoice
+  -> tenx-ai-tts-adapter /v1/audio/speech
+      -> CosyVoice
 ```
 
 ## Responsibility
@@ -29,7 +28,7 @@ Inbound callers:
 
 | Caller | Calls this adapter for | Endpoint |
 | --- | --- | --- |
-| `tenx-ai-gateway` | OpenAI-compatible speech generation | `/v1/audio/speech` |
+| `video-agent` | OpenAI-compatible speech generation | `/v1/audio/speech` |
 
 Outbound dependencies:
 
@@ -42,14 +41,13 @@ End-to-end speech chain:
 
 ```text
 video-agent
-  -> tenx-ai-gateway /v1/audio/speech
+  -> tenx-ai-tts-adapter /v1/audio/speech
       model=cosyvoice
       voice=default
       input=<narration text>
-      -> tenx-ai-tts-adapter /v1/audio/speech
-          -> COSYVOICE_COMMAND
-              -> CosyVoice model
-          -> returns audio/wav bytes
+      -> COSYVOICE_COMMAND
+          -> CosyVoice model
+      -> returns audio/wav bytes
   -> video-agent saves storage/projects/<project_id>/audio/voice.wav
 ```
 
@@ -60,7 +58,7 @@ TTS_ADAPTER_ENABLE_MOCK=false
 COSYVOICE_COMMAND=<your CosyVoice CLI command>
 ```
 
-Mock mode is only for testing the Gateway and VideoAgent call chain before CosyVoice is installed.
+Mock mode is only for testing the VideoAgent to TTS Adapter call chain before CosyVoice is installed.
 
 ## Configuration
 
@@ -86,19 +84,20 @@ pip install -r requirements.txt
 uvicorn app.main:app --host 0.0.0.0 --port 4030 --reload
 ```
 
-## Gateway
+## VideoAgent
 
-Point `tenx-ai-gateway` to this adapter:
+Point `video-agent` to this adapter:
 
 ```bash
-export TENX_SPEECH_OPENAI_BASE_URL=http://127.0.0.1:4030
-export TENX_SPEECH_OPENAI_API_KEY=local-dev-key
+export TTS_ADAPTER_BASE_URL=http://127.0.0.1:4030/v1
+export TTS_ADAPTER_API_KEY=local-dev-key
+export VIDEO_AGENT_ENABLE_TTS_ADAPTER=true
 ```
 
-Call through Gateway:
+Call this adapter directly:
 
 ```bash
-curl -X POST http://127.0.0.1:8088/v1/audio/speech \
+curl -X POST http://127.0.0.1:4030/v1/audio/speech \
   -H 'Authorization: Bearer local-dev-key' \
   -H 'Content-Type: application/json' \
   --output voice.wav \
