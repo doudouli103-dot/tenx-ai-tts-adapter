@@ -11,7 +11,7 @@ Mac Studio
 
 Windows / video-agent machine
   video-agent
-      -> http://<Mac-Studio-IP>:4030/v1/audio/speech
+      -> http://macstudio.tentest.cn:4030/v1/audio/speech
 ```
 
 It exposes:
@@ -23,7 +23,7 @@ POST /v1/audio/speech
 Default local port:
 
 ```text
-http://127.0.0.1:4030
+http://macstudio.tentest.cn:4030
 ```
 
 Runtime boundary:
@@ -223,7 +223,7 @@ uvicorn app.main:app --host 0.0.0.0 --port 4030 --reload
 Health check:
 
 ```bash
-curl http://127.0.0.1:4030/healthz
+curl http://macstudio.tentest.cn:4030/healthz
 ```
 
 Mock-mode startup for adapter-only testing:
@@ -245,7 +245,7 @@ uvicorn app.main:app --host 0.0.0.0 --port 4030 --reload
 Point `video-agent` to this adapter:
 
 ```bash
-export TTS_ADAPTER_BASE_URL=http://127.0.0.1:4030/v1
+export TTS_ADAPTER_BASE_URL=http://macstudio.tentest.cn:4030/v1
 export TTS_ADAPTER_API_KEY=local-dev-key
 export VIDEO_AGENT_ENABLE_TTS_ADAPTER=true
 ```
@@ -253,7 +253,7 @@ export VIDEO_AGENT_ENABLE_TTS_ADAPTER=true
 On Windows PowerShell:
 
 ```powershell
-$env:TTS_ADAPTER_BASE_URL = "http://<Mac-Studio-IP>:4030/v1"
+$env:TTS_ADAPTER_BASE_URL = "http://macstudio.tentest.cn:4030/v1"
 $env:TTS_ADAPTER_API_KEY = "local-dev-key"
 $env:VIDEO_AGENT_ENABLE_TTS_ADAPTER = "true"
 $env:VIDEO_AGENT_SPEECH_MODEL = "cosyvoice"
@@ -263,7 +263,7 @@ $env:VIDEO_AGENT_SPEECH_VOICE = "default"
 Call this adapter directly:
 
 ```bash
-curl -X POST http://127.0.0.1:4030/v1/audio/speech \
+curl -X POST http://macstudio.tentest.cn:4030/v1/audio/speech \
   -H 'Authorization: Bearer local-dev-key' \
   -H 'Content-Type: application/json' \
   --output voice.wav \
